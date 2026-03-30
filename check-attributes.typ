@@ -90,14 +90,6 @@
       panic("Author name is missing. Specify a name for each author in the 'authors' attribute of the template.")
     }
 
-    if ("student-id" not in author or author.student-id == none or author.student-id == "") {
-      panic(
-        "Student ID of '"
-          + author.name
-          + "' is missing. Specify a student ID for each author in the 'authors' attribute of the template.",
-      )
-    }
-
     if ("course" not in author or author.course == none or author.course == "") {
       panic(
         "Course of '"

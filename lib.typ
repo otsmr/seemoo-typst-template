@@ -89,7 +89,6 @@
 
   set document(title: title, author: authors.map(author => author.name))
   let in-frontmatter = state("in-frontmatter", true) // to control page number format in frontmatter
-  let in-body = state("in-body", true) // to control heading formatting in/outside of body
 
   // customize look of figure
   set figure.caption(separator: [ --- ], position: bottom)
@@ -212,16 +211,27 @@
       date-format,
       pdf-version,
       language,
-      many-authors,
+      supervisor,
+      type-of-thesis,
     )
   }
 
 
   // ---------- Abstract ---------------------------------------
 
+  show heading.where(level: 1): it => {
+    set par(leading: 4pt, justify: false)
+    text(upper(it.body), size: 11pt, weight: 0, tracking: 1pt, top-edge: 0.75em, bottom-edge: 1pt)
+    line(length: 100%, stroke: 1pt)
+    v(page-grid, weak: true)
+  }
+
   if (show-abstract and abstract != none) {
-    heading(level: 1, numbering: none, outlined: false, ABSTRACT.at(language))
-    text(abstract)
+    heading(level: 1, numbering: none, ABSTRACT.at("en"))
+    text(abstract.first())
+    v(100pt)
+    heading(level: 1, numbering: none, ABSTRACT.at("de"))
+    text(abstract.last())
     pagebreak()
   }
 
@@ -230,33 +240,37 @@
 
   // top-level TOC entries in bold without filling
   show outline.entry.where(level: 1): it => {
-    set block(above: page-grid)
-    set text(font: heading-font, weight: "semibold", size: body-size)
+    set block(above: 7pt)
+    set text(font: heading-font, weight: 0, size: body-size)
     link(
       it.element.location(), // make entry linkable
-      it.indented(it.prefix(), it.body() + box(width: 1fr) + it.page()),
+      grid(
+        columns: (15pt, auto, 1fr, auto),
+        it.prefix(), it.body(), box(width: 100%, repeat(" ")), it.page(),
+      ),
+      // move(dx: -10pt, it.prefix()) + it.body() + box(width: 1fr) + it.page(),
     )
   }
 
   // other TOC entries in regular with adapted filling
   show outline.entry.where(level: 2).or(outline.entry.where(level: 3)): it => {
-    set block(above: page-grid - body-size)
+    set block(above: 7pt)
     set text(font: heading-font, size: body-size)
     link(
-      it.element.location(), // make entry linkable
-      it.indented(
-        it.prefix(),
-        it.body() + "  " + box(width: 1fr, repeat([.], gap: 2pt), baseline: 30%) + "  " + it.page(),
+      it.element.location(),
+      grid(
+        columns: (auto, auto, 1fr, auto),
+        it.indented(
+          it.prefix(),
+          "",
+        ),
+        it.body(),
+        box(width: 100%, repeat(" . ")),
+        it.page(),
       ),
     )
   }
 
-  show heading: it => {
-    set par(leading: 4pt, justify: false)
-    text(upper(it.body), size: 11pt, weight: 0, tracking: 1pt, top-edge: 0.75em, bottom-edge: 1pt)
-    line(length: 100%, stroke: 1pt)
-    v(page-grid, weak: true)
-  }
 
   if (show-table-of-contents) {
     outline(
@@ -326,6 +340,7 @@
 
   // ========== DOCUMENT BODY ========================================
 
+
   // ---------- Heading Format (Part II: H1-H4) ---------------------------------------
 
   set heading(numbering: "1.1.1")
@@ -340,21 +355,22 @@
     set par(leading: 0pt, justify: false)
     pagebreak()
     context {
-      // if in-body.get() {
       v(page-grid * 4)
-      place(
-        top + right,
-        dx: 50pt, // move further right, adjust as needed
-        dy: -10pt, // no vertical shift
-        text(
-          counter(heading).display(),
-          top-edge: "bounds",
-          size: 70pt,
-          weight: "bold",
-          rgb("#8c8c8c"),
-          font: "Euler Math",
-        ),
-      )
+      if counter(heading).display() != "0" {
+        place(
+          top + right,
+          dx: 50pt, // move further right, adjust as needed
+          dy: -10pt, // no vertical shift
+          text(
+            counter(heading).display(),
+            top-edge: "bounds",
+            size: 70pt,
+            weight: "bold",
+            rgb("#8c8c8c"),
+            font: "Euler Math",
+          ),
+        )
+      }
       text(
         // heading text on separate line
         upper(it.body),
@@ -366,16 +382,29 @@
       )
       grid.cell(colspan: 2, line(length: 100%, stroke: 1pt))
       v(page-grid)
-      // } else {
-      //   v(2 * page-grid)
-      //   text(size: 2 * page-grid, counter(heading).display() + h(0.5em) + it.body) // appendix
-      // }
     }
   }
 
-  show heading.where(level: 2): it => { v(6pt) + text(size: h2-size, weight: 100, tracking: 1pt, upper(it)) + v(6pt) }
-  show heading.where(level: 3): it => { v(16pt) + text(size: h3-size, it) }
-  show heading.where(level: 4): it => { v(16pt) + smallcaps(text(size: h4-size, weight: "semibold", it.body)) }
+  show heading.where(level: 2): it => {
+    set text(size: h2-size, weight: 100, tracking: 1pt)
+    v(6pt)
+    if it.numbering != none {
+      counter(heading).display(it.numbering)
+      h(12pt)
+    }
+    upper(it.body)
+    v(6pt)
+  }
+  show heading.where(level: 3): it => {
+    set text(size: h2-size, weight: 100, tracking: 1pt)
+    v(6pt)
+    if it.numbering != none {
+      counter(heading).display(it.numbering)
+      h(12pt)
+    }
+    emph(upper(it.body))
+    v(6pt)
+  }
 
   // ---------- Body Text ---------------------------------------
 
@@ -384,13 +413,12 @@
 
   // ========== APPENDIX ========================================
 
-  in-body.update(false)
   set heading(numbering: "A.1")
   counter(heading).update(0)
 
   // ---------- Bibliography ---------------------------------------
 
-  show std-bibliography: set heading(numbering: "A.1")
+  show std-bibliography: set heading(numbering: none)
   if bibliography != none {
     set std-bibliography(
       title: REFERENCES.at(language),
@@ -401,10 +429,10 @@
 
   // ---------- Glossary  ---------------------------------------
 
-  if (glossary != none) {
-    heading(level: 1, GLOSSARY.at(language))
-    print-glossary(glossary)
-  }
+  // if (glossary != none) {
+  //   heading(level: 1, GLOSSARY.at(language), outlined: false)
+  //   print-glossary(glossary)
+  // }
 
   // ---------- Appendix (other contents) ---------------------------------------
 

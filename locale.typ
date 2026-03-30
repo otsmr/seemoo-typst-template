@@ -5,7 +5,7 @@
 
 #let TITLEPAGE_DATE = (
   "de": "Eingereicht am:",
-  "en": "Submitted on:",
+  "en": "Date of submission:",
 )
 
 #let TITLEPAGE_STUDENT_ID = (
@@ -20,12 +20,12 @@
 
 #let TITLEPAGE_SUPERVISOR_REF = (
   "de": "Referent",
-  "en": "Examiner",
+  "en": "Advisor",
 )
 
 #let TITLEPAGE_SUPERVISOR_COREF = (
   "de": "Korreferent",
-  "en": "Co-Examiner",
+  "en": "Supervisor",
 )
 
 #let INSTITUTION_SINGLE = (
@@ -75,7 +75,7 @@
 
 #let REFERENCES = (
   "de": "Literatur",
-  "en": "References",
+  "en": "Bibliography",
 )
 
 #let APPENDIX = (

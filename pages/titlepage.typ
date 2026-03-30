@@ -88,7 +88,7 @@
   v(8 * page-grid)
 
   // course of studies
-  text(size: 10pt, authors.map(author => author.course-of-studies).dedup().join(" | "))
+  text(size: 10pt, authors.map(author => author.course-of-studies.join("\n")).dedup().join(" | "))
   v(0.25 * page-grid)
 
 
