@@ -1,12 +1,16 @@
 [package]
-name = "clean-hda"
+name = "seemoo"
 version = "0.1.0"
 entrypoint = "lib.typ"
-authors = ["Roland Schätzle <@roland-KA>", "Stefan Siber <@stefan-ctrl>"]
+authors = [
+    "Roland Schätzle <@roland-KA>",
+    "Stefan Siber <@stefan-ctrl>",
+    "Tobias Müller <otsmr>",
+]
 license = "MIT"
-description = "Computer Science Thesis for Hochschule Darmstadt (h_da)"
-repository = "https://github.com/stefan-ctrl/clean-hda-typst-template"
-keywords = ["h_da", "Darmstadt", "thesis"]
+description = "Computer Science Thesis for the SEEMOO Lab of the TU Darmstadt"
+repository = "https://github.com/otsmr/seemoo-typst-template"
+keywords = ["seemoo", "Darmstadt", "thesis"]
 categories = ["paper", "thesis", "report"]
 exclude = ["template/main.pdf"]
 
