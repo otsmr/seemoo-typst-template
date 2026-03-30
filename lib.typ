@@ -377,8 +377,6 @@
         weight: "light",
         tracking: 1.3pt,
         size: h1-size,
-        top-edge: 0em,
-        bottom-edge: 0em,
       )
       grid.cell(colspan: 2, line(length: 100%, stroke: 1pt))
       v(page-grid)
