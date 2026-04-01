@@ -14,6 +14,19 @@
 #let seemoo-abbr = abbr
 
 
+#let absolute-place(dx: 0em, dy: 0em, content) = {
+  [#metadata("absolute-place")<absolute-place>]
+  context {
+    let dx = measure(h(dx)).width
+    let dy = measure(v(dy)).height
+    context {
+      let pos = query(<absolute-place>).last().location().position()
+      place(dx: -pos.x + dx, dy: -pos.y + dy, content)
+    }
+  }
+}
+
+
 #let clean-seemoo(
   title: none,
   subtitle: none,
@@ -112,6 +125,8 @@
 
   // ========== TITLEPAGE ========================================
 
+  set page(numbering: "i", footer: none) // numbering for List fo Abbreviations and other entries before body
+
   if (titlepage-content != none) {
     titlepage-content
   } else {
@@ -131,7 +146,7 @@
       page-grid,
     )
   }
-  counter(page).update(1)
+  // counter(page).update(2)
 
   // ---------- Heading Format (Part I) ---------------------------------------
   show heading: set text(weight: "bold", font: heading-font)
@@ -192,6 +207,8 @@
             )),
           )
         }
+      } else {
+        absolute-place(dx: page.width - 3cm, dy: page.height - 3cm, text(counter(page).display()))
       },
     ),
     header-ascent: page-grid,
@@ -201,6 +218,7 @@
   // ========== FRONTMATTER ========================================
 
   // ---------- INFO PAGE with Confidentiality Statement------------
+
 
   if (show-title-back) {
     pagebreak()
@@ -219,6 +237,7 @@
 
   // ---------- Abstract ---------------------------------------
 
+
   show heading.where(level: 1): it => {
     set par(leading: 4pt, justify: false)
     text(upper(it.body), size: 11pt, weight: 0, tracking: 1pt, top-edge: 0.75em, bottom-edge: 1pt)
@@ -236,7 +255,7 @@
   }
 
   // ---------- ToC (Outline) ---------------------------------------
-  set page(numbering: "i", footer: none) // numbering for List fo Abbreviations and other entries before body
+
 
   // top-level TOC entries in bold without filling
   show outline.entry.where(level: 1): it => {
@@ -331,7 +350,7 @@
     set text(fill: blue.darken(val))
     key
   })
-  abbr.list()
+  abbr.list(columns: 1)
 
 
   set page(numbering: "1") // numbering for body body
