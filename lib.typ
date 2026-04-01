@@ -14,6 +14,19 @@
 
 #let seemoo-abbr = abbr
 
+#let seemoo-abbr-show(body) = {
+  show: abbr.show-rule
+  abbr.config(
+    style: key => {
+      let val = if text.weight <= "medium" { 15% } else { 30% }
+      set text(fill: blue.darken(val))
+      key
+    },
+    space-char: " ",
+  )
+  body
+}
+
 
 #let absolute-place(dx: 0em, dy: 0em, content) = {
   [#metadata("absolute-place")<absolute-place>]
@@ -347,11 +360,14 @@
   }
   show: abbr.show-rule
   abbr.load(abbr-list-csv)
-  abbr.config(style: key => {
-    let val = if text.weight <= "medium" { 15% } else { 30% }
-    set text(fill: blue.darken(val))
-    key
-  })
+  abbr.config(
+    style: key => {
+      let val = if text.weight <= "medium" { 15% } else { 30% }
+      set text(fill: blue.darken(val))
+      key
+    },
+    space-char: " ",
+  )
   abbr.list(columns: 1)
 
 
