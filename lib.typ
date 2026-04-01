@@ -6,6 +6,7 @@
 #import "pages/titlepage.typ": *
 #import "pages/title-back.typ": *
 #import "pages/declaration-of-authorship.typ": *
+#import "pages/ai-declaration.typ": *
 #import "check-attributes.typ": *
 
 // Workaround for the lack of an `std` scope.
@@ -60,6 +61,7 @@
   table-of-figures-page-break: true,
   table-of-tables-page-break: false,
   pdf-version: "v1.0.0",
+  ai-tools: (:),
   body,
 ) = {
   // check required attributes
@@ -463,6 +465,14 @@
   set heading(numbering: it => h(-18pt) + "", outlined: false)
 
   // ---------- Declaration Of Authorship ---------------------------------------
+
+  if (not ai-tools.len() == 0) {
+    pagebreak()
+    ai-declaration(
+      ai-tools,
+    )
+  }
+
 
   if (show-declaration-of-authorship) {
     pagebreak()
