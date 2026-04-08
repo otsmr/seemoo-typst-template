@@ -14,6 +14,10 @@
 
 #let seemoo-abbr = abbr
 
+// https://github.com/typst/typst/issues/1295#issuecomment-1853762154
+#let in-outline = state("in-outline", false)
+#let caption(short, long) = context if in-outline.get() { short } else { long }
+
 #let seemoo-abbr-show(body) = {
   show: abbr.show-rule
   abbr.config(
@@ -332,12 +336,14 @@
       pagebreak()
     }
     [= #TABLE_OF_FIGURES.at(language)]
+    in-outline.update(true)
     outline(
       title: none,
       target: figure.where(kind: image),
       indent: auto,
       depth: 3,
     )
+    in-outline.update(false)
   }
 
   if (show-table-of-tables) {
@@ -345,12 +351,14 @@
       pagebreak()
     }
     [= #TABLE_OF_TABLES.at(language)]
+    in-outline.update(true)
     outline(
       title: none,
       target: figure.where(kind: table), //TODO verfiy
       indent: auto,
       depth: 3,
     )
+    in-outline.update(false)
   }
 
   // Abbreviations
