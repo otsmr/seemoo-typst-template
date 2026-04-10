@@ -62,6 +62,7 @@
   declaration-of-authorship-content: none,
   titlepage-content: none,
   city: "Darmstadt",
+  thesis-number: none,
   supervisor: (:),
   date: none,
   date-format: "[month repr:long] [day], [year]",
@@ -250,6 +251,7 @@
       language,
       supervisor,
       type-of-thesis,
+      thesis-number,
     )
   }
 

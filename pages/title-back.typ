@@ -9,6 +9,7 @@
   language,
   supervisor,
   type-of-thesis,
+  thesis-number,
 ) = {
   // ---------- Page Setup ---------------------------------------
 
@@ -39,6 +40,9 @@
         row-gutter: 1em,
         column-gutter: 1em,
         // align: (right, left),
+
+        text(thesis-number),
+        [],
 
         // submission date
         text(TITLEPAGE_DATE.at(language)),
