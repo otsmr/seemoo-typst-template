@@ -14,6 +14,11 @@
 
 #let seemoo-abbr = abbr
 
+#let colors = (
+  reference: rgb("#467cfa"),
+  cite: rgb("#377e18"),
+);
+
 // https://github.com/typst/typst/issues/1295#issuecomment-1853762154
 #let in-outline = state("in-outline", false)
 #let caption(short, long) = context if in-outline.get() { short } else { long }
@@ -23,7 +28,7 @@
   abbr.config(
     style: key => {
       let val = if text.weight <= "medium" { 15% } else { 30% }
-      set text(fill: blue.darken(val))
+      set text(fill: colors.reference)
       key
     },
     space-char: " ",
@@ -42,6 +47,17 @@
       place(dx: -pos.x + dx, dy: -pos.y + dy, content)
     }
   }
+}
+
+
+
+// ----------------------------------------------------------------------------
+// Spaced Small Caps (key ClassicThesis feature)
+// ----------------------------------------------------------------------------
+
+/// Apply letter-spaced small caps to content
+#let spaced-smallcaps(content) = {
+  text(tracking: 0.1em, smallcaps(content))
 }
 
 
@@ -108,9 +124,16 @@
 
   // ---------- Fonts & Related Measures ---------------------------------------
 
-  let body-font = "Palatino"
+  let fonts = (
+    // TeX Gyre Pagella is a Palatino clone - the authentic ClassicThesis look
+    // Falls back to other serif fonts if not available
+    main: ("TeX Gyre Pagella", "Libertinus Serif", "EB Garamond 12", "New Computer Modern"),
+    mono: ("Fira Code", "JetBrains Mono", "DejaVu Sans Mono"),
+  )
+
+  // let body-font = "Palatino"
   let body-size = 11.4pt
-  let heading-font = "Palatino"
+  // let fonts.main = "Palatino"
   let h1-size = 11pt
   let h2-size = 10pt
   let h3-size = 10pt
@@ -123,8 +146,19 @@
   set document(title: title, author: authors.map(author => author.name))
   let in-frontmatter = state("in-frontmatter", true) // to control page number format in frontmatter
 
-  // customize look of figure
-  set figure.caption(separator: [ --- ], position: bottom)
+  show figure.caption: it => {
+    pad(
+      bottom: 12pt,
+      grid(
+        columns: (auto, 1fr),
+        column-gutter: 0.4em,
+        [#it.supplement
+          #context it.counter.display():
+        ],
+        align(left, it.body),
+      ),
+    )
+  }
 
   // math numbering
   if (enable-math-numbering) {
@@ -140,9 +174,6 @@
     register-glossary(glossary)
   }
 
-  // show links in dark blue
-  // show link: set text(fill: blue.darken(40%))
-
   // ========== TITLEPAGE ========================================
 
   set page(numbering: "i", footer: none) // numbering for List fo Abbreviations and other entries before body
@@ -153,7 +184,7 @@
     titlepage(
       authors,
       date,
-      heading-font,
+      fonts.main,
       language,
       logo-top,
       logo-bottom,
@@ -169,70 +200,78 @@
   // counter(page).update(2)
 
   // ---------- Heading Format (Part I) ---------------------------------------
-  show heading: set text(weight: "bold", font: heading-font)
+  show heading: set text(weight: "bold", font: fonts.main)
   show heading.where(level: 1): it => { v(2 * page-grid) + text(size: 2 * page-grid, it) }
 
   // ---------- Page Setup ---------------------------------------
 
   // adapt body text layout to basic measures
   set text(
-    font: body-font,
+    font: fonts.main,
     lang: language,
-    size: body-size - 0.5pt, // 0.5pt adjustment because of large x-hight
+    size: 11pt, // 0.5pt adjustment because of large x-hight
     top-edge: 0.75 * body-size,
     bottom-edge: -0.25 * body-size,
     fill: luma(0),
   )
   set par(
-    spacing: page-grid,
-    leading: page-grid - body-size,
+    spacing: 2.9pt,
+    leading: 2.9pt,
     justify: true,
+    first-line-indent: 10pt,
   )
 
   set page(
     paper: "a4",
     margin: (
-      top: 2.5cm,
+      top: 71pt,
+      // top: 58pt,
       bottom: 3.7cm,
-      outside: 3.7cm,
-      inside: 2.4cm,
+      outside: 3.3cm,
+      inside: 2.7cm,
     ),
     header: text(
-      font: heading-font,
+      font: fonts.main,
       size: body-size,
       context if (
         not query(heading.where(level: 1).after(here())).map(h => h.location().page()).at(0, default: 0)
           == here().page()
       ) {
-        if calc.odd(here().page()) {
-          pad(
-            right: -22pt,
-            align(right, hydra(
-              2,
+        pad(
+          right: -22pt,
+          align(
+            right,
+            move(dy: -8pt, hydra(
+              1,
               display: (a, it) => {
                 (
-                  text(size: 7pt, tracking: 1pt, weight: "bold", upper(it.body)) + "      " + counter(page).display("1")
+                  context {
+                    let nums = counter(heading).get()
+                    if nums.len() > 0 {
+                      numbering("1", nums.first())
+                    }
+                  }
+                    + "  "
+                    + text(tracking: 1pt, smallcaps(lower(it.body)))
+                    + "      "
+                    + counter(page).display("1")
                 )
               },
             )),
-          )
-        } else {
-          pad(
-            left: -22pt,
-            align(left, hydra(
-              1,
-              display: (a, it) => {
-                counter(page).display("1") + "      " + text(size: 7pt, tracking: 1pt, weight: "bold", it.body)
-              },
-            )),
-          )
-        }
+          ),
+        )
       } else {
-        absolute-place(dx: page.width - 3cm, dy: page.height - 3cm, text(counter(page).display()))
+        absolute-place(dx: page.width - 3.5cm, dy: page.height - 3cm, text(counter(page).display()))
       },
     ),
     header-ascent: page-grid,
   )
+
+  set enum(indent: 12pt, body-indent: 4pt, spacing: 12pt)
+  show enum: set block(above: 13pt, below: 2em)
+
+  set list(indent: 12pt, body-indent: 4pt, spacing: 12pt)
+  show list: set block(above: 13pt, below: 2em)
 
 
   // ========== FRONTMATTER ========================================
@@ -281,7 +320,7 @@
   // top-level TOC entries in bold without filling
   show outline.entry.where(level: 1): it => {
     set block(above: 7pt)
-    set text(font: heading-font, weight: 0, size: body-size)
+    set text(font: fonts.main, weight: 0, size: body-size)
     link(
       it.element.location(), // make entry linkable
       grid(
@@ -295,7 +334,7 @@
   // other TOC entries in regular with adapted filling
   show outline.entry.where(level: 2).or(outline.entry.where(level: 3)): it => {
     set block(above: 7pt)
-    set text(font: heading-font, size: body-size)
+    set text(font: fonts.main, size: body-size)
     link(
       it.element.location(),
       grid(
@@ -323,7 +362,7 @@
   // Figures
   show outline.entry.where(level: 1): it => {
     set block(above: page-grid - body-size)
-    set text(font: heading-font, size: body-size)
+    set text(font: fonts.main, size: body-size)
     link(
       it.element.location(), // make entry linkable
       it.indented(
@@ -373,7 +412,7 @@
   abbr.config(
     style: key => {
       let val = if text.weight <= "medium" { 15% } else { 30% }
-      set text(fill: blue.darken(val))
+      set text(fill: colors.reference)
       key
     },
     space-char: " ",
@@ -390,24 +429,26 @@
 
   // ---------- Heading Format (Part II: H1-H4) ---------------------------------------
 
+
   set heading(numbering: "1.1.1")
 
   show heading: it => {
     set par(leading: 4pt, justify: false)
     text(it, top-edge: 0.75em, bottom-edge: -0.25em)
     v(page-grid, weak: true)
+    is-after-heading.update(true)
   }
 
   show heading.where(level: 1): it => {
     set par(leading: 0pt, justify: false)
     pagebreak()
     context {
-      v(page-grid * 4)
+      v(41pt)
       if counter(heading).display() != "0" {
         place(
           top + right,
           dx: 50pt, // move further right, adjust as needed
-          dy: -10pt, // no vertical shift
+          dy: -3pt, // no vertical shift
           text(
             counter(heading).display(),
             top-edge: "bounds",
@@ -419,39 +460,64 @@
         )
       }
       text(
-        // heading text on separate line
         upper(it.body),
         weight: "light",
-        tracking: 1.3pt,
+        tracking: 1.2pt,
         size: h1-size,
       )
-      grid.cell(colspan: 2, line(length: 100%, stroke: 1pt))
-      v(page-grid)
+      v(-6pt)
+      line(length: 100%, stroke: .5pt)
+      v(8pt)
     }
   }
 
   show heading.where(level: 2): it => {
-    set text(size: h2-size, weight: 100, tracking: 1pt)
-    v(6pt)
-    if it.numbering != none {
-      counter(heading).display(it.numbering)
-      h(12pt)
-    }
-    upper(it.body)
-    v(6pt)
+    block(spacing: 0pt)[
+      #set text(size: 10pt, weight: 100, tracking: 1pt)
+      #v(20pt)
+      #if it.numbering != none {
+        counter(heading).display(it.numbering)
+        h(12pt)
+      }
+      #smallcaps(lower(it.body))
+      #v(18pt)
+    ]
   }
+
   show heading.where(level: 3): it => {
-    set text(size: h2-size, weight: 100, tracking: 1pt)
-    v(6pt)
-    if it.numbering != none {
-      counter(heading).display(it.numbering)
-      h(12pt)
-    }
-    emph(upper(it.body))
-    v(6pt)
+    block(spacing: 0pt)[
+      #set text(size: h2-size, weight: 100, tracking: 0.3pt)
+      #v(20pt)
+      #if it.numbering != none {
+        counter(heading).display(it.numbering)
+        h(12pt)
+      }
+      #text(
+        style: "italic",
+        it.body,
+      )
+      #v(18pt)
+    ]
   }
 
   // ---------- Body Text ---------------------------------------
+
+
+  show cite: it => {
+    // Use a show rule on the text inside the citation
+    show regex("\d+"): set text(fill: colors.cite)
+    it
+  }
+  show ref: it => {
+    let el = it.element
+    if el != none and el.func() == heading {
+      set text(fill: colors.reference)
+      it
+    } else {
+      // Fallback for other references (figures, equations, etc.)
+      it
+    }
+  }
 
   body
 
