@@ -519,6 +519,18 @@
     }
   }
 
+  set table(
+    inset: 5pt,
+    align: horizon,
+    fill: (_, y) => if calc.odd(y) { luma(240) } else { none },
+    stroke: (x, y) => (
+      top: if y <= 1 { 0.3pt + black } else { none },
+      left: if x > 0 { 0.3pt + black } else { none },
+      right: none,
+      bottom: none,
+    ),
+  )
+
   body
 
 
