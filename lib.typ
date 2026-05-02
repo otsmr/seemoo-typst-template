@@ -531,6 +531,8 @@
     ),
   )
 
+  show figure: set block(above: 10pt)
+
   body
 
 
