@@ -24,7 +24,7 @@
 #let caption(short, long) = context if in-outline.get() { short } else { long }
 
 #let seemoo-abbr-show(body) = {
-  show: abbr.show-rule
+  // show: abbr.show-rule
   abbr.config(
     style: key => {
       let val = if text.weight <= "medium" { 15% } else { 30% }
@@ -38,14 +38,11 @@
 
 
 #let absolute-place(dx: 0em, dy: 0em, content) = {
-  [#metadata("absolute-place")<absolute-place>]
   context {
     let dx = measure(h(dx)).width
     let dy = measure(v(dy)).height
-    context {
-      let pos = query(<absolute-place>).last().location().position()
-      place(dx: -pos.x + dx, dy: -pos.y + dy, content)
-    }
+    let pos = here().position()
+    place(dx: -pos.x + dx, dy: -pos.y + dy, content)
   }
 }
 
@@ -127,7 +124,7 @@
   let fonts = (
     // TeX Gyre Pagella is a Palatino clone - the authentic ClassicThesis look
     // Falls back to other serif fonts if not available
-    main: ("TeX Gyre Pagella", "Libertinus Serif", "EB Garamond 12", "New Computer Modern"),
+    main: ("TeX Gyre Pagella", "Libertinus Serif", "New Computer Modern"),
     mono: ("Fira Code", "JetBrains Mono", "DejaVu Sans Mono"),
   )
 
@@ -234,8 +231,7 @@
       font: fonts.main,
       size: body-size,
       context if (
-        not query(heading.where(level: 1).after(here())).map(h => h.location().page()).at(0, default: 0)
-          == here().page()
+        not query(heading.where(level: 1)).any(h => h.location().page() == here().page())
       ) {
         pad(
           right: -22pt,
@@ -455,7 +451,7 @@
             size: 70pt,
             weight: "bold",
             rgb("#8c8c8c"),
-            font: "Euler Math",
+            font: fonts.main,
           ),
         )
       }
