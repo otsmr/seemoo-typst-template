@@ -384,6 +384,7 @@
   }
 
   if (show-table-of-tables) {
+    v(60pt)
     if table-of-tables-page-break {
       pagebreak()
     }
@@ -398,7 +399,8 @@
     in-outline.update(false)
   }
 
-  // Abbreviations
+
+  v(60pt)
 
   if abbr-page-break {
     pagebreak()
@@ -506,11 +508,11 @@
   }
   show ref: it => {
     let el = it.element
-    if el != none and el.func() == heading {
+    if el != none and el.func() in (heading, figure) {
       set text(fill: colors.reference)
       it
     } else {
-      // Fallback for other references (figures, equations, etc.)
+      // Fallback for other references (equations, etc.)
       it
     }
   }
