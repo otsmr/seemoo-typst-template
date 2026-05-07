@@ -297,7 +297,7 @@
   show heading.where(level: 1): it => {
     set par(leading: 4pt, justify: false)
     text(upper(it.body), size: 11pt, weight: 0, tracking: 1pt, top-edge: 0.75em, bottom-edge: 1pt)
-    line(length: 100%, stroke: 1pt)
+    line(length: 100%, stroke: 0.4pt)
     v(page-grid, weak: true)
   }
 
@@ -329,19 +329,22 @@
 
   // other TOC entries in regular with adapted filling
   show outline.entry.where(level: 2).or(outline.entry.where(level: 3)): it => {
-    set block(above: 7pt)
+    set block(above: 5pt)
     set text(font: fonts.main, size: body-size)
-    link(
-      it.element.location(),
-      grid(
-        columns: (auto, auto, 1fr, auto),
-        it.indented(
-          it.prefix(),
-          "",
+    pad(
+      left: 3pt,
+      link(
+        it.element.location(),
+        grid(
+          columns: (auto, auto, 1fr, auto),
+          it.indented(
+            it.prefix(),
+            "",
+          ),
+          it.body(),
+          box(width: 100%, repeat(" . ")),
+          it.page(),
         ),
-        it.body(),
-        box(width: 100%, repeat(" . ")),
-        it.page(),
       ),
     )
   }
@@ -499,7 +502,6 @@
   }
 
   // ---------- Body Text ---------------------------------------
-
 
   show cite: it => {
     // Use a show rule on the text inside the citation
