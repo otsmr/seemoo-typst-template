@@ -232,6 +232,7 @@
       size: body-size,
       context if (
         not query(heading.where(level: 1)).any(h => h.location().page() == here().page())
+        and counter(heading).get().first() > 0
       ) {
         pad(
           right: -22pt,
