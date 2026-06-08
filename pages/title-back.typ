@@ -26,7 +26,10 @@
     {
       text(
         size: 11pt,
-        [#author.name: #emph(title), #type-of-thesis, Technische Universität Darmstadt, #date.display("[year]")],
+        {
+          show linebreak: [ ]
+          [#author.name: #emph(title), #type-of-thesis, Technische Universität Darmstadt, #date.display("[year]")]
+        },
       )
       linebreak()
       v(1em)
