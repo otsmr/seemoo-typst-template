@@ -232,7 +232,7 @@
       size: body-size,
       context if (
         not query(heading.where(level: 1)).any(h => h.location().page() == here().page())
-        and counter(heading).get().first() > 0
+          and counter(heading).get().first() > 0
       ) {
         pad(
           right: -22pt,
@@ -296,7 +296,7 @@
 
 
   show heading.where(level: 1): it => {
-    set par(leading: 4pt, justify: false)
+    set par(leading: 4pt, justify: false, first-line-indent: 0pt)
     text(upper(it.body), size: 11pt, weight: 0, tracking: 1pt, top-edge: 0.75em, bottom-edge: 1pt)
     line(length: 100%, stroke: 0.4pt)
     v(page-grid, weak: true)
@@ -306,6 +306,7 @@
     heading(level: 1, numbering: none, ABSTRACT.at("en"))
     text(abstract.first())
     v(100pt)
+
     heading(level: 1, numbering: none, ABSTRACT.at("de"))
     text(abstract.last())
     pagebreak()
