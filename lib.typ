@@ -137,7 +137,6 @@
   let h4-size = 10pt
   let page-grid = 13pt // vertical spacing on all pages
 
-
   // ---------- Basic Document Settings ---------------------------------------
 
   set document(title: title, author: authors.map(author => author.name))
@@ -270,11 +269,9 @@
   set list(indent: 12pt, body-indent: 4pt, spacing: 12pt)
   show list: set block(above: 13pt, below: 2em)
 
-
   // ========== FRONTMATTER ========================================
 
   // ---------- INFO PAGE with Confidentiality Statement------------
-
 
   if (show-title-back) {
     pagebreak()
@@ -291,9 +288,7 @@
     )
   }
 
-
   // ---------- Abstract ---------------------------------------
-
 
   show heading.where(level: 1): it => {
     set par(leading: 4pt, justify: false, first-line-indent: 0pt)
@@ -305,7 +300,8 @@
   if (show-abstract and abstract != none) {
     heading(level: 1, numbering: none, ABSTRACT.at("en"))
     text(abstract.first())
-    v(100pt)
+    // v(20pt)
+    pagebreak()
 
     heading(level: 1, numbering: none, ABSTRACT.at("de"))
     text(abstract.last())
@@ -313,7 +309,6 @@
   }
 
   // ---------- ToC (Outline) ---------------------------------------
-
 
   // top-level TOC entries in bold without filling
   show outline.entry.where(level: 1): it => {
@@ -350,7 +345,6 @@
       ),
     )
   }
-
 
   if (show-table-of-contents) {
     outline(
@@ -404,7 +398,6 @@
     in-outline.update(false)
   }
 
-
   v(60pt)
 
   if abbr-page-break {
@@ -422,16 +415,13 @@
   )
   abbr.list(columns: 1)
 
-
   set page(numbering: "1") // numbering for body body
   in-frontmatter.update(false) // end of frontmatter
   counter(page).update(1) // so the first chapter starts at page 1 (now in arabic numbers)
 
   // ========== DOCUMENT BODY ========================================
 
-
   // ---------- Heading Format (Part II: H1-H4) ---------------------------------------
-
 
   set heading(numbering: "1.1.1")
 
@@ -537,7 +527,6 @@
 
   body
 
-
   // ========== APPENDIX ========================================
 
   set heading(numbering: "A.1")
@@ -580,7 +569,6 @@
       ai-tools,
     )
   }
-
 
   if (show-declaration-of-authorship) {
     pagebreak()
