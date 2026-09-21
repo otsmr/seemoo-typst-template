@@ -91,6 +91,7 @@
   abbr-page-break: true,
   table-of-figures-page-break: true,
   table-of-tables-page-break: false,
+  table-bottom-spacing: 20pt,
   pdf-version: "v1.0.0",
   ai-tools: (:),
   body,
@@ -155,6 +156,9 @@
       ),
     )
   }
+
+  show figure.where(kind: table): set figure.caption(position: top)
+  show figure.where(kind: table): set block(below: table-bottom-spacing)
 
   // math numbering
   if (enable-math-numbering) {
@@ -300,8 +304,7 @@
   if (show-abstract and abstract != none) {
     heading(level: 1, numbering: none, ABSTRACT.at("en"))
     text(abstract.first())
-    // v(20pt)
-    pagebreak()
+    v(20pt)
 
     heading(level: 1, numbering: none, ABSTRACT.at("de"))
     text(abstract.last())
@@ -312,7 +315,7 @@
 
   // top-level TOC entries in bold without filling
   show outline.entry.where(level: 1): it => {
-    set block(above: 7pt)
+    set block(above: 5pt)
     set text(font: fonts.main, weight: 0, size: body-size)
     link(
       it.element.location(), // make entry linkable
@@ -326,7 +329,7 @@
 
   // other TOC entries in regular with adapted filling
   show outline.entry.where(level: 2).or(outline.entry.where(level: 3)): it => {
-    set block(above: 5pt)
+    set block(above: 4pt)
     set text(font: fonts.main, size: body-size)
     pad(
       left: 3pt,

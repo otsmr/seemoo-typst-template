@@ -40,13 +40,12 @@
   // ---------- Title ---------------------------------------
 
   v(10 * page-grid)
-  text(fill: CTtitle, tracking: 1.3pt, size: 0.8 * page-grid, upper(title))
+  text(fill: CTtitle, tracking: 1.3pt, size: 1.0 * page-grid, upper(title))
   v(0.25 * page-grid)
   if subtitle != none {
     text(fill: luma(80), size: page-grid, subtitle)
   }
   v(page-grid)
-
 
   // ---------- Author(s) ---------------------------------------
 
@@ -60,13 +59,12 @@
     ..authors.map(author => align(
       center,
       {
-        text(weight: "bold", tracking: 1.3pt, size: 7pt, upper(author.name))
+        text(weight: "bold", tracking: 1.3pt, size: 9pt, upper(author.name))
       },
     ))
   )
 
   v(8 * page-grid)
-
 
   // ---------- Sub-Title-Infos ---------------------------------------
   //
@@ -90,7 +88,6 @@
   // course of studies
   text(size: 10pt, authors.map(author => author.course-of-studies.join("\n")).dedup().join(" | "))
   v(0.25 * page-grid)
-
 
   if logo-bottom != none {
     place(
