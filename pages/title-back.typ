@@ -79,6 +79,9 @@
         },
         // ),
       )
+
+      v(1em)
+
       set par(hanging-indent: 0pt)
 
       for line in author.course-of-studies {
