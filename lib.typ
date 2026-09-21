@@ -144,6 +144,7 @@
   let in-frontmatter = state("in-frontmatter", true) // to control page number format in frontmatter
 
   show figure.caption: it => {
+    set text(size: 10pt)
     pad(
       bottom: 12pt,
       grid(
