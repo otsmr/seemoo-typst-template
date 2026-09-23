@@ -575,13 +575,17 @@
   }
 
   if (show-declaration-of-authorship) {
-    pagebreak()
-    declaration-of-authorship(
-      authors.first(),
-      date,
-      type-of-thesis,
-      city,
-      date-format,
-    )
+    if (declaration-of-authorship-content != none) {
+      declaration-of-authorship-content
+    } else {
+      pagebreak()
+      declaration-of-authorship(
+        authors.first(),
+        date,
+        type-of-thesis,
+        city,
+        date-format,
+      )
+    }
   }
 }

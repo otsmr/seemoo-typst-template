@@ -7,6 +7,10 @@
   city,
   date-format,
 ) = {
+  // The declaration is legal back matter and intentionally has no running
+  // header or page number.
+  set page(header: none, footer: none)
+
   show heading: it => {
     set par(leading: 4pt, justify: false)
     text(upper(it.body), size: 11pt, weight: 0, tracking: 1pt, top-edge: 0.75em, bottom-edge: 1pt)
